@@ -30,7 +30,7 @@ catColor = alt.condition(
 )
 
 
-chart1 = alt.Chart(df).mark_point().encode(
+chart1 = (alt.Chart(df).mark_point().encode(
     x="Interest Rate_percent",
     y="Inflation Rate_percent",
     # color = "Region:N"
@@ -47,9 +47,11 @@ chart1 = alt.Chart(df).mark_point().encode(
             "Interest Rate_percent",
             "Inflation Rate_percent"
         ]
+    #).transform_filter(  # removes the regions from the legend as well so
+    #catSelection
     ).add_params(
         catSelection
-    )
+    ))
 
 chart1.save("interactive_scatter.html")
 
