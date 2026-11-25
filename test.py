@@ -17,3 +17,17 @@ chart = alt.Chart(europe).mark_point().encode(
 )
 
 chart.save("europe test.html")
+
+chart1 = alt.Chart(df).mark_point().encode(
+    x="Interest Rate_percent",
+    y="Inflation Rate_percent",
+    color = alt.Color(
+        "Region:N",  # "Region" is both the name in the legend and the reference for the data
+        scale=alt.Scale(
+            domain=["Europe", "Asia", "Africa", "Americas", "Oceania"],
+            range=["blue", "red", "green", "orange", "purple"]
+        )
+    )
+)
+
+chart1.save("global test.html")
