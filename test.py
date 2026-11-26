@@ -1,5 +1,6 @@
 import pandas as pd
 import altair as alt
+from vega_datasets import data
 
 df = pd.read_csv("country_economics_data.csv")
 
@@ -64,3 +65,53 @@ chart4 = chart2 | chart3
 chart4.save("interactive_scatter.html")
 
 # chart1.save("global test.html")
+
+
+countries = alt.topo_feature(data.world_110m.url, "countries")
+
+
+#Grey background map displaying all countries
+backgroundMap = alt.Chart(countries).mark_geoshape(
+    fill='lightgray',
+    stroke='white'
+).properties(
+    width=800,
+    height=500
+).project('equirectangular')
+#Display all map layers
+alt.layer(
+    backgroundMap
+)
+
+# Choropleth map coloured by water quality
+choropleth = alt.Chart(countries).mark_geoshape(
+    stroke='white'
+).encode(
+    color=alt.Color(
+        'Jobless Rate_percent:Q',
+        title='Jobless Rate (%)',
+        scale=alt.Scale(scheme='reds')
+    ),
+    tooltip=[
+        alt.Tooltip('Name:N', title='Country'),
+        alt.Tooltip('Jobless Rate_percent:Q', title='Jobless Rate (%)')
+    ]
+).transform_lookup(
+    lookup='id',
+    from_=alt.LookupData(
+        df,
+        'ID',
+        ['Name', 'Jobless Rate_percent']
+    )
+).properties(
+    width=800,
+    height=500
+).project('equirectangular')
+
+# Combine map layers
+mapChart = alt.layer(
+    backgroundMap,
+    choropleth
+)
+
+mapChart.save("map_test.html")
